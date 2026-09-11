@@ -6,10 +6,10 @@ set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # The login node's default Slurm cluster is `inter`, so pin sbatch to cm4.
-export SLURM_CLUSTERS=cm4
+# export SLURM_CLUSTERS=cm4 # Only one cluster on BIPS HPC, not needed
 
-N_NODES=4
-CPUS_PER_NODE=112
+N_NODES=6
+CPUS_PER_NODE=192 # 96 physical cores, 2 threads each, 192 "cpus" from slurm POV (using 96 left nodes half empty)
 
 mkdir -p "${PROJECT_DIR}/logs"
 
@@ -18,12 +18,13 @@ mkdir -p "${PROJECT_DIR}/logs"
 # before the walltime so they can deregister instead of being killed.
 WORKER_CMD="source ${PROJECT_DIR}/hq_env.sh && exec ${PROJECT_DIR}/hq worker start --manager slurm --cpus ${CPUS_PER_NODE} --idle-timeout 2h --on-server-lost finish-running --time-limit 23h55m"
 
-sbatch --clusters=cm4 \
-  --partition=cm4_std \
-  --qos=cm4_std \
+sbatch \
+  --partition=compute \
+  --qos=medium \
   --job-name=hq-workers \
   --nodes=${N_NODES} \
   --ntasks-per-node=${CPUS_PER_NODE} \
+  --mem=0 \
   --time=24:00:00 \
   --output="${PROJECT_DIR}/logs/hq_workers_%j.log" \
   --get-user-env \
