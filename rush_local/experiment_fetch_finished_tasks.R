@@ -17,7 +17,6 @@ reg$cluster.functions = makeClusterFunctionsInteractive(external = TRUE)
 
 batchMap(function(n_tasks, n_parameters, payload_size, .job) {
   renv::load(".")
-  set.seed(7832)
   library(rush)
   lgr::get_logger("mlr3")$set_threshold("warn")
 

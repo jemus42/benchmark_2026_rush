@@ -2,7 +2,7 @@ library(data.table)
 library(batchtools)
 library(microbenchmark)
 
-registry = "/dss/lxclscratch/00/ra98ror2/registries/benchmark_2026_rush/rush"
+registry = "registries/"
 
 # Push running tasks
 reg = loadRegistry(file.dir = file.path(registry, "push_running_tasks"))
