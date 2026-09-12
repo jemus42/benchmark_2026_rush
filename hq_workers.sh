@@ -8,7 +8,7 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The login node's default Slurm cluster is `inter`, so pin sbatch to cm4.
 # export SLURM_CLUSTERS=cm4 # Only one cluster on BIPS HPC, not needed
 
-N_NODES=6
+N_NODES=3
 CPUS_PER_NODE=192 # 96 physical cores, 2 threads each, 192 "cpus" from slurm POV (using 96 left nodes half empty)
 
 mkdir -p "${PROJECT_DIR}/logs"
@@ -20,12 +20,12 @@ WORKER_CMD="source ${PROJECT_DIR}/hq_env.sh && exec ${PROJECT_DIR}/hq worker sta
 
 sbatch \
   --partition=compute \
-  --qos=medium \
+  --qos=long \
   --job-name=hq-workers \
   --nodes=${N_NODES} \
   --ntasks-per-node=${CPUS_PER_NODE} \
   --mem=0 \
-  --time=24:00:00 \
+  --time=7-00:00:00 \
   --output="${PROJECT_DIR}/logs/hq_workers_%j.log" \
   --get-user-env \
   --export=NONE <<EOF
